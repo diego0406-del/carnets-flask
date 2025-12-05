@@ -1,22 +1,15 @@
-import qrcode
 import os
+import qrcode
 
+BASE_URL = "https://carnets-flask.onrender.com/carnet/"
 CARNETS_DIR = "static/carnets"
-QRS_DIR = "static/qrs"
+OUTPUT_DIR = "static/qrs"
 
-# IMPORTANTE → cambia localhost por tu IP local para escanear desde celular
-BASE_URL = "http://localhost:5000/carnet/"  
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-os.makedirs(QRS_DIR, exist_ok=True)
-
-imagenes = os.listdir(CARNETS_DIR)
-
-for img in imagenes:
-    url = BASE_URL + img
-    qr = qrcode.make(url)
-
-    qr_filename = img.split('.')[0] + "_QR.png"
-    output_path = os.path.join(QRS_DIR, qr_filename)
-    qr.save(output_path)
-
-    print(f"QR generado: {output_path}")
+for filename in os.listdir(CARNETS_DIR):
+    if filename.lower().endswith(".png") or filename.lower().endswith(".jpg"):
+        full_url = BASE_URL + filename
+        img = qrcode.make(full_url)
+        img.save(os.path.join(OUTPUT_DIR, filename.replace(".png", "_qr.png")))
+        print("QR generado:", full_url)
