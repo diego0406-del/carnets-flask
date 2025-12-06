@@ -3,11 +3,13 @@ import os
 # Generar QR automáticamente al iniciar
 from generate_qrs import generar_todos_los_qr
 
+# Primero se crea la app
+app = Flask(__name__)
+
+# Ahora se pueden usar los decoradores
 @app.before_first_request
 def generar_qrs_en_render():
     generar_todos_los_qr()
-
-app = Flask(__name__)
 
 @app.route("/")
 def index():
