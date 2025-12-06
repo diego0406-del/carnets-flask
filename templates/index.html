@@ -3,63 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carnets • Panel QR</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Carnets Generados</title>
+
+    <!-- Bootstrap moderno -->
+    <link rel="stylesheet" 
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
 
     <style>
         body {
-            background: #f4f5f7;
+            background: #f0f2f5;
         }
+
+        .gallery-title {
+            font-weight: 700;
+            font-size: 2rem;
+            margin-top: 30px;
+            text-align: center;
+        }
+
         .card {
-            border-radius: 15px;
+            border-radius: 14px;
             overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            transition: 0.2s ease;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
+
         .card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
         }
-        .carnet-img {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
+
+        .card img {
             border-bottom: 1px solid #ddd;
         }
-        .qr-img {
-            width: 120px;
+
+        .card-body {
+            background: white;
         }
+
+        .btn-modern {
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-weight: 600;
+            width: 100%;
+        }
+
+        /* Grid responsive */
+        .carnet-col {
+            padding: 10px;
+        }
+
     </style>
 </head>
 <body>
 
-<div class="container py-5">
+    <h1 class="gallery-title">Carnets Generados</h1>
 
-    <h1 class="text-center mb-4 fw-bold">Panel de Carnets con QR</h1>
+    <div class="container mt-4">
+        <div class="row justify-content-center">
 
-    <div class="row g-4">
-        {% for carnet in carnets %}
-        <div class="col-md-4 col-lg-3">
-            <div class="card p-3 text-center bg-white">
+            {% for carnet in carnets %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 carnet-col">
 
-                <img src="{{ url_for('static', filename='carnets/' + carnet) }}" class="carnet-img">
+                <div class="card shadow-sm">
+                    <img src="{{ url_for('static', filename='carnets/' + carnet) }}" 
+                         class="card-img-top" 
+                         alt="{{ carnet }}">
 
-                <h5 class="mt-3">{{ carnet }}</h5>
+                    <div class="card-body text-center">
 
-                <img src="{{ url_for('static', filename='qrs/' + carnet.replace('.png', '_qr.png').replace('.jpg', '_qr.png')) }}" 
-                     class="qr-img mt-2">
+                        <h5 class="card-title" style="font-size: 1rem;">
+                            {{ carnet.replace('.png', '').replace('.jpg', '') }}
+                        </h5>
 
-                <a class="btn btn-primary mt-3 w-100"
-                   href="{{ url_for('static', filename='qrs/' + carnet.replace('.png', '_qr.png').replace('.jpg', '_qr.png')) }}"
-                   download>
-                    Descargar QR
-                </a>
+                        <!-- Botón descargar QR -->
+                        <a href="{{ url_for('static', filename='qrs/' + carnet.replace('.png', '_qr.png')) }}"
+                           download
+                           class="btn btn-primary btn-modern mt-2">
+                            Descargar QR
+                        </a>
+
+                        <!-- Botón ver carnet -->
+                        <a href="/carnet/{{ carnet }}" 
+                           class="btn btn-outline-secondary btn-modern mt-2">
+                            Ver Carnet
+                        </a>
+
+                    </div>
+                </div>
 
             </div>
-        </div>
-        {% endfor %}
-    </div>
+            {% endfor %}
 
-</div>
+        </div>
+    </div>
 
 </body>
 </html>
