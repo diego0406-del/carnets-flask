@@ -1,19 +1,23 @@
 from flask import Flask, render_template
 import os
-# Generar QR automáticamente al iniciar
 from generate_qrs import generar_todos_los_qr
 
-# Primero se crea la app
 app = Flask(__name__)
 
-# Ahora se pueden usar los decoradores
-@app.before_first_request
-def generar_qrs_en_render():
-    generar_todos_los_qr()
+# Flag para asegurarnos de ejecutar solo una vez
+qr_generado = False
+
+@app.before_request
+def ejecutar_qr_una_vez():
+    global qr_generado
+    if not qr_generado:
+        generar_todos_los_qr()
+        qr_generado = True
 
 @app.route("/")
 def index():
-    carnets = [f for f in os.listdir("static/carnets") if f.endswith((".png", ".jpg", ".jpeg"))]
+    carnets = [f for f in os.listdir("static/carnets") 
+               if f.endswith((".png", ".jpg", ".jpeg"))]
     return render_template("index.html", carnets=carnets)
 
 @app.route("/carnet/<filename>")
@@ -22,3 +26,4 @@ def mostrar_carnet(filename):
 
 if __name__ == "__main__":
     app.run(debug=True)
+
