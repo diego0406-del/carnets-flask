@@ -1,5 +1,11 @@
 from flask import Flask, render_template
 import os
+# Generar QR automáticamente al iniciar
+from generate_qrs import generar_todos_los_qr
+
+@app.before_first_request
+def generar_qrs_en_render():
+    generar_todos_los_qr()
 
 app = Flask(__name__)
 
@@ -14,3 +20,4 @@ def mostrar_carnet(filename):
 
 if __name__ == "__main__":
     app.run(debug=True)
+
